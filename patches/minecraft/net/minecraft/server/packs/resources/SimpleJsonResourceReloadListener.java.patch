@@ -1,6 +1,6 @@
 --- a/net/minecraft/server/packs/resources/SimpleJsonResourceReloadListener.java
 +++ b/net/minecraft/server/packs/resources/SimpleJsonResourceReloadListener.java
-@@ -55,7 +_,13 @@
+@@ -55,7 +_,15 @@
              ResourceLocation resourcelocation1 = filetoidconverter.fileToId(resourcelocation);
  
              try (Reader reader = entry.getValue().openAsReader()) {
@@ -12,6 +12,8 @@
 +                    continue;
 +                }
 +                p_368755_.parse(p_369854_, json).ifSuccess(p_370131_ -> {
++                    p_370131_ = net.minecraftforge.common.ForgeHooks.onJsonDataParsed(p_368755_, resourcelocation1, p_370131_);
++                    if (p_370131_ == null) return;
                      if (p_279404_.putIfAbsent(resourcelocation1, (T)p_370131_) != null) {
                          throw new IllegalStateException("Duplicate data file ignored with ID " + resourcelocation1);
                      }

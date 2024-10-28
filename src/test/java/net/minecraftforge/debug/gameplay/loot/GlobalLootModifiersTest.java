@@ -76,7 +76,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 @GameTestHolder("forge.global_loot_modifiers")
 @Mod(GlobalLootModifiersTest.MODID)

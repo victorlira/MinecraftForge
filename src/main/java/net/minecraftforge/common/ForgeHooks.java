@@ -88,6 +88,7 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.storage.LevelStorageSource;
 import net.minecraft.world.level.storage.WorldData;
 import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.LootDataType;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.block.state.BlockState;
@@ -1241,5 +1242,16 @@ public final class ForgeHooks {
 
     public static DataComponentMap gatherItemComponents(Item item, DataComponentMap dataComponents) {
         return DataComponentMap.composite(dataComponents, ForgeEventFactory.gatherItemComponentsEvent(item, dataComponents).getDataComponentMap());
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> T onJsonDataParsed(Codec<T> codec, ResourceLocation key, T value) {
+        if (codec == LootDataType.TABLE.codec()) {
+            var table = (LootTable)value;
+            table.setLootTableId(key);
+            value = (T)net.minecraftforge.event.ForgeEventFactory.onLoadLootTable(key, table);
+        }
+
+        return value;
     }
 }

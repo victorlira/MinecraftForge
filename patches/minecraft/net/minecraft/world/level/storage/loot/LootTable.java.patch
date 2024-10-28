@@ -60,7 +60,7 @@
          return objectarraylist;
      }
  
-@@ -210,6 +_,54 @@
+@@ -210,6 +_,68 @@
  
      public static LootTable.Builder lootTable() {
          return new LootTable.Builder();
@@ -88,6 +88,20 @@
 +            }
 +        }
 +        return null;
++    }
++
++    public int poolCount() {
++        return this.pools.size();
++    }
++
++    public LootPool getPool(int entry) {
++        return this.pools.get(entry);
++    }
++
++    @org.jetbrains.annotations.Nullable
++    public LootPool removePool(int entry) {
++        checkFrozen();
++        return this.pools.remove(entry);
 +    }
 +
 +    public void addPool(LootPool pool) {
