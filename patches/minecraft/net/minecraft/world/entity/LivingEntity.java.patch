@@ -518,14 +518,12 @@
              this.completeUsingItem();
          }
      }
-@@ -3134,8 +_,12 @@
+@@ -3134,8 +_,10 @@
      public void startUsingItem(InteractionHand p_21159_) {
          ItemStack itemstack = this.getItemInHand(p_21159_);
          if (!itemstack.isEmpty() && !this.isUsingItem()) {
 +            int duration = net.minecraftforge.event.ForgeEventFactory.onItemUseStart(this, itemstack, itemstack.getUseDuration(this));
-+            if (duration <= 0) {
-+                return;
-+            }
++            if (duration < 0) return;
              this.useItem = itemstack;
 -            this.useItemRemaining = itemstack.getUseDuration(this);
 +            this.useItemRemaining = duration;
