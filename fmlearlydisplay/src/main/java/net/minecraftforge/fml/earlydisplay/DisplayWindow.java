@@ -604,10 +604,25 @@ public class DisplayWindow implements ImmediateWindowProvider {
 
     @Override
     public void updateModuleReads(final ModuleLayer layer) {
-        var fm = layer.findModule("forge").orElseThrow();
-        getClass().getModule().addReads(fm);
-        var clz = FMLLoader.getGameLayer().findModule("forge").map(l->Class.forName(l, "net.minecraftforge.client.loading.ForgeLoadingOverlay")).orElseThrow();
-        loadingOverlay = Arrays.stream(clz.getDeclaredMethods()).filter(m-> Modifier.isStatic(m.getModifiers()) && m.getName().equals("newInstance")).findFirst().orElseThrow();
+        final var FORGE_MODULE = "net.minecraftforge.forge";
+        var forge_module = layer.findModule(FORGE_MODULE).orElse(null);
+        if (forge_module == null)
+            throw new IllegalStateException("Could not find " + FORGE_MODULE + " in " + layer);
+
+        getClass().getModule().addReads(forge_module);
+
+
+        var clz = Class.forName(forge_module, "net.minecraftforge.client.loading.ForgeLoadingOverlay");
+
+        for (var mtd : clz.getDeclaredMethods()) {
+            if (Modifier.isStatic(mtd.getModifiers()) && "newInstance".equals(mtd.getName())) {
+                this.loadingOverlay = mtd;
+                break;
+            }
+        }
+
+        if (loadingOverlay == null)
+            throw new IllegalStateException("Could not find static newInstace method in " + clz.getName());
     }
 
     public int getFramebufferTextureId() {
